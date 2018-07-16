@@ -36,9 +36,9 @@ class Model
         return self::$_instance[$key];
     }
     /**
-     * 获取当前表明
+     * 设置当前表明
      */
-    public function getSource($table){
+    public function setSource($table){
         $this->_tableName = $table;
     }
     /**
@@ -60,7 +60,7 @@ class Model
     }
     
     public function find($parameters=null){
-    
+        
     }
     
     public function findFirst($parameters=null){

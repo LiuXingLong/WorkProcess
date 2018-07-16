@@ -1,11 +1,16 @@
 <?php
 namespace Apps\Backend\Controllers;
 use Apps\Backend\Controllers\ControllerBase;
+use Apps\Backend\Models\UserModel;
 
 class IndexController extends ControllerBase
 {
     public function index()
     {
+        $User = new UserModel();
+        $User->getUser();
+        die;
+        
         $this->assign(['title' => '个人框架']);
         $this->show('index');
     }

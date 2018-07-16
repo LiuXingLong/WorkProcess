@@ -1,9 +1,9 @@
 <?php
 namespace Apps\Common\Controllers;
-
+use Apps\Common\Template\View;
 class Controller
 {
-    private $_ViewValues;
+    private $_ViewValues = [];
     public $param = PARAMS;
     public function __construct()
     {
@@ -17,11 +17,6 @@ class Controller
         }
     }
     public function show($file){
-        $FilePath = VIEW_PATH.DS.'backend'.DS.$file.'.html';
-        $ViewValue = $this->_ViewValues;
-        if (!is_file($FilePath)) {
-            throw new \Exception('模板文件'.$file .'不存在!');
-        }
-        include($FilePath);
+        new View($file, $this->_ViewValues);
     }
 }
