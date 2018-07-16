@@ -1,5 +1,6 @@
 ### Nginx 安装说明
 
+```
 server {
     listen      80;
     server_name www.process.com;
@@ -26,10 +27,11 @@ server {
         deny all;
     }
 }
-
+```
 
 ### Apache 安装说明
 
+```
 <IfModule mod_rewrite.c>
     <Directory "/data/WorkProcess/public">
         RewriteEngine On
@@ -51,5 +53,5 @@ server {
       Require all granted
   </Directory>
 </VirtualHost>
-
+```
 
