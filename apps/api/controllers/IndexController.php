@@ -1,7 +1,7 @@
 <?php
 namespace Apps\Api\Controllers;
 use Apps\Api\Controllers\ControllerBase;
-use Apps\Common\Models\Model;
+use Apps\Api\Models\UserModel;
 
 class IndexController extends ControllerBase
 {
@@ -12,6 +12,8 @@ class IndexController extends ControllerBase
     }
     public function test()
     {
-        echo json_encode(array('Api: test','aaa'));
+        $db = new UserModel();
+        $db->setUser();
+        //echo json_encode(array('Api: test','aaa'));
     }
 }
