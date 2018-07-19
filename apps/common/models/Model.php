@@ -1,8 +1,6 @@
 <?php
 namespace Apps\Common\Models;
 
-use Phalcon\Forms\Element\Select;
-
 class Model
 {
     protected $dsn;
@@ -91,7 +89,7 @@ class Model
     public function insert($inset = array())
     {
         if(empty($inset) || !is_array($inset)){
-            return 'inset data empty';
+            return 'insert data empty';
         }
         $key_name = '';
         $val_name = '';
@@ -133,12 +131,33 @@ class Model
         return $sth->rowCount();
     }
     
-    // 更新数据
+    /**
+     * 更新数据
+     * @param $update
+     * @param $parameters
+     * @return string|number
+     */
     public function update($update,$parameters)
     {
-        
-        
-        
+        if(!empty($parameters['for_update']) && !empty($parameters['shared_lock'])){
+            return 'sql error';
+        }
+        $setVal = '';
+        foreach($update as $key => $val){
+            $setVal .= ','.$key.'='."'{$val}'";
+        }
+        $setVal = substr($setVal, 1);
+        $table = $this->_tablePrefix.$this->_tableName;
+        $where = $this->getWhere($parameters);
+        echo $sql = 'UPDATE '.$table.' SET '.$setVal.' '.$where;
+        $sth = $this->dbh->prepare($sql);
+        if(!empty($parameters['bind']) && is_array($parameters['bind'])){
+            foreach ($parameters['bind'] as $key => $val){
+                $sth->bindValue(":{$key}",$val);
+            }
+        }
+        $sth->execute();
+        return $sth->rowCount();
     }
      
     /**
@@ -224,9 +243,35 @@ class Model
     /**
      * SQL查询
      */
-    public function query($sql,$bind)
+    public function query($sql,$bind=null)
     {
-        
+        $sql = trim($sql);
+        if(empty($sql)) return 'sql empty';
+        $sth = $this->dbh->prepare($sql);
+        if(!empty($bind) && is_array($bind)){
+            foreach($bind as $key => $val){
+                $sth->bindValue($key+1, $val);
+            }
+        }
+        $res = $sth->execute();
+        $type = substr($sql, 0 , 6);
+        switch (strtoupper($type))
+        {
+            case 'INSERT':
+                return $res;
+                break;
+            case 'DELETE':
+                return $sth->rowCount();
+                break;
+            case 'UPDATE':
+                return $sth->rowCount();
+                break;
+            case 'SELECT':
+                return $sth->fetchAll(\PDO::FETCH_ASSOC);
+                break;
+            default:
+                return 'sql error';
+        }        
     }
     /**
      * 开启事务

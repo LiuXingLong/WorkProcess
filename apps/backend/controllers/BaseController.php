@@ -1,8 +1,8 @@
 <?php
-namespace Apps\Api\Controllers;
+namespace Apps\Backend\Controllers;
 use Apps\Common\Controllers\Controller;
 
-class ControllerBase extends Controller
+class BaseController extends Controller
 {
     public function __construct()
     {

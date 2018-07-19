@@ -1,8 +1,8 @@
 <?php
 namespace Apps\Backend\Models;
-use Apps\Backend\Models\ModelBase;
+use Apps\Backend\Models\BaseModel;
 
-class UserModel extends ModelBase
+class UserModel extends BaseModel
 {
     /**
      * 重新定义表名

@@ -1,18 +1,18 @@
 <?php
-namespace Apps\Backend\Models;
+namespace Apps\Common\Models;
 use Apps\Common\Models\Model;
 
-class ModelBase
+class BaseModel
 {
-    private $DB_OBJ;    // 必须设置私有
+    private $DB_OBJ;    // 必须设置私有    子类Model操作时,每次都必须调用此变量操作,已做到每次设置表
     private $TableName; // 必须设置私有
     public function __get($name) {
         $this->DB_OBJ->setSource($this->TableName);
         return $this->$name;
     }    
-    public function __construct()
+    public function __construct($dbConfig)
     {
-        $this->DB_OBJ = Model::getInstance(DB_CONFIG['admin']);
+        $this->DB_OBJ = Model::getInstance($dbConfig);
         $this->TableName = $this->setSource();
     }
     // 必须设置保护,子类可重置此方法来设置表名

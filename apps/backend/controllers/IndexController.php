@@ -1,9 +1,9 @@
 <?php
 namespace Apps\Backend\Controllers;
-use Apps\Backend\Controllers\ControllerBase;
+use Apps\Backend\Controllers\BaseController;
 use Apps\Backend\Models\UserModel;
 
-class IndexController extends ControllerBase
+class IndexController extends BaseController
 {
     public function index()
     {
