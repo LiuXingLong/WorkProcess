@@ -2,15 +2,12 @@
 namespace Apps\Backend\Models;
 use Apps\Backend\Models\BaseModel;
 
-class UserModel extends BaseModel
+class AdminModel extends BaseModel
 {
     /**
      * 重新定义表名
      */
 //     public function setSource(){
-//         return 'table_name';
+//         return 'log';
 //     }
-    public function getUser(){
-        var_dump($this->DB_OBJ);
-    }
 }

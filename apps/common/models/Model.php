@@ -5,6 +5,7 @@ class Model
 {
     protected $dsn;
     protected $dbh;
+    protected $sql;
     protected $_tablePrefix;
     protected $_tableName;
     protected static $_instance = null;
@@ -36,7 +37,7 @@ class Model
         return self::$_instance[$key];
     }
     /**
-     * 设置当前表明
+     * 设置当前表名
      */
     public function setSource($table)
     {
@@ -58,7 +59,7 @@ class Model
     {
         $where = '';
         if(!empty($parameters['conditions'])){
-            $conditions = strtr($parameters['conditions'],['?' => ':'] );
+            $conditions = strtr($parameters['conditions'],['?' => ':'] ); // ?等同 ：
             $where .= 'WHERE '.$conditions;
         }
         if(!empty($parameters['group'])){
@@ -89,7 +90,7 @@ class Model
     public function insert($inset = array())
     {
         if(empty($inset) || !is_array($inset)){
-            return 'insert data empty';
+            return 'insert data empty or not array(key => val)';
         }
         $key_name = '';
         $val_name = '';
@@ -100,8 +101,8 @@ class Model
         $key_name = substr($key_name, 1);
         $val_name = substr($val_name, 0 , -1);
         $table = $this->_tablePrefix.$this->_tableName;
-        $sql = "INSERT INTO ".$table." (".$key_name.") VALUES (".$val_name.")";
-        $sth = $this->dbh->prepare($sql);
+        $this->sql = "INSERT INTO ".$table." (".$key_name.") VALUES (".$val_name.")";
+        $sth = $this->dbh->prepare($this->sql);
         foreach($inset as $key => $val){
             $sth->bindValue(":{$key}",$val);
         }
@@ -111,7 +112,7 @@ class Model
     /**
      * 删除数据
      * @param  $parameters   // conditions group order limit offset for_update shared_lock bind
-     * @return string|number //删除条数
+     * @return string|number //删除影响条数
      */
     public function delete($parameters=null)
     {
@@ -120,8 +121,8 @@ class Model
         }
         $table = $this->_tablePrefix.$this->_tableName;
         $where = $this->getWhere($parameters);
-        $sql = 'DELETE FROM '.$table.' '.$where;
-        $sth = $this->dbh->prepare($sql);
+        $this->sql = 'DELETE FROM '.$table.' '.$where;
+        $sth = $this->dbh->prepare($this->sql);
         if(!empty($parameters['bind']) && is_array($parameters['bind'])){
             foreach ($parameters['bind'] as $key => $val){
                 $sth->bindValue(":{$key}",$val);
@@ -133,24 +134,29 @@ class Model
     
     /**
      * 更新数据
-     * @param $update
-     * @param $parameters
-     * @return string|number
+     * @param $parameters    // set = array(key = >val) conditions group order limit offset for_update shared_lock bind
+     * @return string|number //更新影响条数
      */
-    public function update($update,$parameters)
+    public function update($parameters=null)
     {
         if(!empty($parameters['for_update']) && !empty($parameters['shared_lock'])){
             return 'sql error';
         }
+        if(empty($parameters['set']) || !is_array($parameters['set'])){
+            return 'set data error';
+        }
         $setVal = '';
-        foreach($update as $key => $val){
-            $setVal .= ','.$key.'='."'{$val}'";
+        foreach($parameters['set'] as $key => $val){
+            $setVal .= ','.$key.'='.':SET_'.$key;
         }
         $setVal = substr($setVal, 1);
         $table = $this->_tablePrefix.$this->_tableName;
         $where = $this->getWhere($parameters);
-        echo $sql = 'UPDATE '.$table.' SET '.$setVal.' '.$where;
-        $sth = $this->dbh->prepare($sql);
+        $this->sql = 'UPDATE '.$table.' SET '.$setVal.' '.$where;
+        $sth = $this->dbh->prepare($this->sql);
+        foreach($parameters['set'] as $key => $val){
+            $sth->bindValue(":SET_{$key}",$val);
+        }        
         if(!empty($parameters['bind']) && is_array($parameters['bind'])){
             foreach ($parameters['bind'] as $key => $val){
                 $sth->bindValue(":{$key}",$val);
@@ -175,8 +181,8 @@ class Model
         }        
         $table = $this->_tablePrefix.$this->_tableName;
         $where = $this->getWhere($parameters);
-        $sql = 'SELECT '.$parameters['columns'].' FROM '.$table.' '.$where;
-        $sth = $this->dbh->prepare($sql);
+        $this->sql = 'SELECT '.$parameters['columns'].' FROM '.$table.' '.$where;
+        $sth = $this->dbh->prepare($this->sql);
         if(!empty($parameters['bind']) && is_array($parameters['bind'])){
             foreach ($parameters['bind'] as $key => $val){
                 $sth->bindValue(":{$key}",$val);
@@ -203,8 +209,8 @@ class Model
         $parameters['limit'] = 1;
         $table = $this->_tablePrefix.$this->_tableName;
         $where = $this->getWhere($parameters);
-        $sql = 'SELECT '.$parameters['columns'].' FROM '.$table.' '.$where;
-        $sth = $this->dbh->prepare($sql);
+        $this->sql = 'SELECT '.$parameters['columns'].' FROM '.$table.' '.$where;
+        $sth = $this->dbh->prepare($this->sql);
         if(!empty($parameters['bind']) && is_array($parameters['bind'])){
            foreach ($parameters['bind'] as $key => $val){
                $sth->bindValue(":{$key}",$val);
@@ -228,8 +234,8 @@ class Model
         $parameters['columns'] = 'count(*)';
         $table = $this->_tablePrefix.$this->_tableName;
         $where = $this->getWhere($parameters);
-        $sql = 'SELECT '.$parameters['columns'].' FROM '.$table.' '.$where;
-        $sth = $this->dbh->prepare($sql);
+        $this->sql = 'SELECT '.$parameters['columns'].' FROM '.$table.' '.$where;
+        $sth = $this->dbh->prepare($this->sql);
         if(!empty($parameters['bind']) && is_array($parameters['bind'])){
             foreach ($parameters['bind'] as $key => $val){
                 $sth->bindValue(":{$key}",$val);
@@ -242,19 +248,22 @@ class Model
     
     /**
      * SQL查询
+     * @param $sql
+     * @param $bind array(,,,)
+     * @return string|boolean|number
      */
     public function query($sql,$bind=null)
     {
-        $sql = trim($sql);
-        if(empty($sql)) return 'sql empty';
-        $sth = $this->dbh->prepare($sql);
+        $this->sql = trim($sql);
+        if(empty($this->sql)) return 'sql empty';
+        $sth = $this->dbh->prepare($this->sql);
         if(!empty($bind) && is_array($bind)){
             foreach($bind as $key => $val){
                 $sth->bindValue($key+1, $val);
             }
         }
         $res = $sth->execute();
-        $type = substr($sql, 0 , 6);
+        $type = substr($this->sql, 0 , 6);
         switch (strtoupper($type))
         {
             case 'INSERT':
@@ -272,6 +281,12 @@ class Model
             default:
                 return 'sql error';
         }        
+    }
+    /**
+     * 输出SQL
+     */
+    public function echoSQL(){
+        echo $this->sql;
     }
     /**
      * 开启事务
@@ -295,7 +310,7 @@ class Model
         $this->dbh->rollBack();
     }
     /**
-     * $_instance 信息
+     * $_instance model_obj 信息
      */
     public function instanceInfo()
     {
