@@ -1,6 +1,6 @@
 <?php
 namespace Apps\Api\Controllers;
-use Apps\Common\Controllers\Controller;
+use Process\Controllers\Controller;
 
 class BaseController extends Controller
 {

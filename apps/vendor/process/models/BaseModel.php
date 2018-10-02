@@ -1,6 +1,6 @@
 <?php
-namespace Apps\Common\Models;
-use Apps\Common\Models\Model;
+namespace Process\Models;
+use Process\Models\Model;
 
 class BaseModel
 {

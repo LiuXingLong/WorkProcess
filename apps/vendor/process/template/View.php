@@ -1,5 +1,5 @@
 <?php
-namespace Apps\Common\Template;
+namespace Process\Template;
 
 class View
 {

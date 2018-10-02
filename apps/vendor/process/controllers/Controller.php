@@ -1,6 +1,6 @@
 <?php
-namespace Apps\Common\Controllers;
-use Apps\Common\Template\View;
+namespace Process\Controllers;
+use Process\Template\View;
 class Controller
 {
     private $_ViewValues = [];

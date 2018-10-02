@@ -11,47 +11,24 @@ define('REDIS_CONFIG', include APP_PATH.DS.'config'.DS.SYSTEM_MODE.DS.'redis.php
 
 //  注册给定的函数作为 __autoload 的实现
 spl_autoload_register(function ($class) {
+    $file = '';
     $path = explode('\\',$class);
-    $file = APP_PATH;
     $cnt = count($path);
-    for($i = 1; $i < $cnt ; $i++){
-        if($i == $cnt - 1){
+    for($i = 0; $i < $cnt ; $i++){
+        if($i == 0){
+            $file = (strtolower($path[$i]) != 'apps') ? strtolower($path[$i]):'';
+        }elseif($i == $cnt - 1){
             $file .= DS.$path[$i].'.php';
         }else{
             $file .= DS.strtolower($path[$i]);
         }
+    }  
+    // 加载项目中文件
+    if(file_exists(APP_PATH.DS.$file)){
+        include APP_PATH.DS.$file;
     }
-    if (file_exists($file)) {
-        include $file;
+    // 加载vendor中文件
+    if (file_exists(APP_PATH.DS.'vendor'.DS.$file)) {
+        include APP_PATH.DS.'vendor'.DS.$file;
     }
 });
-
-/**
- * 加载文件（包括文件夹下面所有文件及文件夹）
- * @param $dir 文件夹路径
- */
-function LoadDir($dir){
-    if(!is_dir($dir)) return false;
-    $handle = dir($dir);
-    while(false !== ($filename = $handle->read())){
-        if( $filename != '.' && $filename != '..'  ){
-            if(is_file($dir.DS.$filename)){
-                include $dir.DS.$filename;
-            }else{
-                LoadDir($dir.DS.$filename);
-            }
-        }
-    }
-    $handle->close();
-    return true;
-}
-
-// 目录
-$LoadArray = [
-    'vendor',   // 加载第三方扩展
-];
-
-//加载目录
-foreach($LoadArray as $load){
-    LoadDir(APP_PATH.DS.$load);
-}
