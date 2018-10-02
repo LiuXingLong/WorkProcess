@@ -1,5 +1,5 @@
 <?php
-namespace Apps\Common\Models;
+namespace Process\Models;
 
 class Model
 {

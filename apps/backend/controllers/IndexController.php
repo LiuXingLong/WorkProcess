@@ -1,7 +1,6 @@
 <?php
 namespace Apps\Backend\Controllers;
 use Apps\Backend\Controllers\BaseController;
-use Apps\Backend\Models\UserModel;
 use Apps\Backend\Models\AdminModel;
 
 class IndexController extends BaseController

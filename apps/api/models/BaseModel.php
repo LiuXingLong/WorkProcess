@@ -1,6 +1,6 @@
 <?php
 namespace Apps\Api\Models;
-use Apps\Common\Models\BaseModel as Model;
+use Process\Models\BaseModel as Model;
 
 class BaseModel extends Model
 {
