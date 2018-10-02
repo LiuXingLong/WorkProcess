@@ -43,35 +43,35 @@ class BaseModel
     
     /**
      * 删除数据
-     * @param  $parameters   // conditions group order limit offset for_update shared_lock bind
+     * @param  $parameters   // array('conditions' => '', 'bind' => array(key => val),'group' => '', 'order' => '', 'limit' => '', 'offset' => '', 'for_update' => '', 'shared_lock' => '' )
      * @return string|number //删除影响条数
      */
     final private function delete($parameters=null){}
     
     /**
      * 更新数据
-     * @param $parameters    // set = array(key = >val) conditions group order limit offset for_update shared_lock bind
+     * @param $parameters    // array( 'set' => array(key => val), 'conditions' => '', 'bind' => array(key => val),'group' => '', 'order' => '', 'limit' => '', 'offset' => '', 'for_update' => '', 'shared_lock' => '')
      * @return string|number //更新影响条数
      */
     final private function update($parameters=null){}
     
     /**
      * 查询全部数据 
-     * @param $parameters  // columns conditions group order limit offset for_update shared_lock bind
+     * @param $parameters  // array('columns' => '', 'conditions' => '', 'bind' => array(key => val), 'group' => '', 'order' => '', 'limit' => '', 'offset' => '', 'for_update' => '', 'shared_lock' => '' )
      * @return string|mixed
      */
     final private function find($parameters=null){}
     
     /**
      * 查询一条数据
-     * @param $parameters   // columns conditions group order limit offset for_update shared_lock bind
+     * @param $parameters   // array('columns' => '', 'conditions' => '', 'bind' => array(key => val), 'group' => '' ,'order' => '', 'limit' => '', 'offset' => '', 'for_update' => '', 'shared_lock' => '')
      * @return string|mixed
      */
     final private function findFirst($parameters=null){}
     
     /**
      * 查询数据条数
-     * @param $parameters  // conditions group order limit offset for_update shared_lock bind
+     * @param $parameters  // array('conditions' => '', 'bind' => array(key => val), 'group'=> '', 'order' => '', 'limit' => '' , 'offset' => '', 'for_update' => '', 'shared_lock' => '')
      * @return string|mixed
      */
     final private function count($parameters=null){}

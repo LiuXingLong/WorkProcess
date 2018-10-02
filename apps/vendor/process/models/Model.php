@@ -111,7 +111,7 @@ class Model
     
     /**
      * 删除数据
-     * @param  $parameters   // conditions group order limit offset for_update shared_lock bind
+     * @param  $parameters   // array('conditions' => '', 'bind' => array(key => val),'group' => '', 'order' => '', 'limit' => '', 'offset' => '', 'for_update' => '', 'shared_lock' => '' )
      * @return string|number //删除影响条数
      */
     public function delete($parameters=null)
@@ -134,7 +134,7 @@ class Model
     
     /**
      * 更新数据
-     * @param $parameters    // set = array(key = >val) conditions group order limit offset for_update shared_lock bind
+     * @param $parameters    // array( 'set' => array(key => val), 'conditions' => '', 'bind' => array(key => val),'group' => '', 'order' => '', 'limit' => '', 'offset' => '', 'for_update' => '', 'shared_lock' => '')
      * @return string|number //更新影响条数
      */
     public function update($parameters=null)
@@ -168,7 +168,7 @@ class Model
      
     /**
      * 查询全部数据 
-     * @param $parameters  // columns conditions group order limit offset for_update shared_lock bind
+     * @param $parameters  // array('columns' => '', 'conditions' => '', 'bind' => array(key => val), 'group' => '', 'order' => '', 'limit' => '', 'offset' => '', 'for_update' => '', 'shared_lock' => '' )
      * @return string|mixed
      */
     public function find($parameters=null)
@@ -195,7 +195,7 @@ class Model
     
     /**
      * 查询一条数据
-     * @param $parameters   // columns conditions group order limit offset for_update shared_lock bind
+     * @param $parameters   // array('columns' => '', 'conditions' => '', 'bind' => array(key => val), 'group' => '' ,'order' => '', 'limit' => '', 'offset' => '', 'for_update' => '', 'shared_lock' => '')
      * @return string|mixed
      */
     public function findFirst($parameters=null)
@@ -223,7 +223,7 @@ class Model
     
     /**
      * 查询数据条数
-     * @param $parameters  // conditions group order limit offset for_update shared_lock bind
+     * @param $parameters  // array('conditions' => '', 'bind' => array(key => val), 'group'=> '', 'order' => '', 'limit' => '' , 'offset' => '', 'for_update' => '', 'shared_lock' => '')
      * @return string|mixed
      */
     public function count($parameters=null)
